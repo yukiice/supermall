@@ -1,0 +1,42 @@
+<template>
+    <div class="nav-bar">
+        <!-- 单写slot的话不易进行布局  所以包裹一个div -->
+    <div class="nav-left"><slot name="left"></slot></div>
+    <div class="nav-center"><slot name="center">标题</slot></div>
+    <div class="nav-right"><slot name="right"></slot></div>  
+    </div>
+</template>
+
+<script>
+    export default {
+        name:'NavBar',
+        props:[''],
+        components: {},
+        computed: {},
+        beforeMount() {},
+        mounted() {},
+        methods: {},
+        watch: {}
+
+    }
+
+</script>
+
+<style scoped>
+.nav-bar {
+    display: flex;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(100,100,100,.1)
+}
+.nav-left{
+    width: 60px;
+}
+.nav-right{
+    width: 60px;
+}
+.nav-center{
+    flex: 1; 
+}
+</style>

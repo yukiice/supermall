@@ -1,10 +1,12 @@
 <template>
-    <div>
-        <h2>首页</h2>
+    <div id="home">
+        <nav-bar class="home-nav"><div  slot="center">购物街</div></nav-bar>
     </div>
 </template>
 
 <script>
+import NavBar from 'components/common/navbar/NavBar'
+
     export default {
         name:'Home',
         props:[''],
@@ -13,7 +15,9 @@
 
             };
         },
-        components: {},
+        components: {
+            NavBar
+        },
         computed: {},
         beforeMount() {},
         mounted() {},
@@ -24,6 +28,9 @@
 
 </script>
 
-<style lang='' scoped>
-
+<style scoped>
+.home-nav {
+    background-color: pink;
+    color: white
+}
 </style>
