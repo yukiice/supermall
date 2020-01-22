@@ -1,19 +1,43 @@
-# supermall
+# Project---supermall
 
-## Project setup
-```
-npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 1.项目结构划分
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- node_modules
+
+
+
+- public
+
+
+
+- src
+  - assets
+    - css
+    - img
+  - components
+    - common
+    - content
+- views
+
+
+
+- common
+
+
+
+- router
+
+
+
+- store
+
+
+
+- network
+
+
+
+## 2.
+
