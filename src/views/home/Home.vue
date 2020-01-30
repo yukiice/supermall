@@ -3,11 +3,21 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view></feature-view>
-    <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
-    <goods-list :goods="showGoods"></goods-list>
+    <scroll
+      class="content"
+      ref="scroll"
+      :probe-type="3"
+      @scroll="contentScroll"
+      :pull-up-load="true"
+      @pullingUp="loadMore"
+    >
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -15,14 +25,14 @@
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
+import Scroll from "components/common/scroll/Scroll";
+import BackTop from "components/content/backTop/BackTop";
 
 import HomeSwiper from "./childComps/HomeSwiper";
-
 import RecommendView from "./childComps/RecommendView";
+import FeatureView from "./childComps/FeatureViews";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-
-import FeatureView from "./childComps/FeatureViews";
 
 export default {
   name: "Home",
@@ -45,12 +55,13 @@ export default {
           list: []
         }
       },
-      currentType: "pop"
+      currentType: "pop",
+      isShowBackTop: false
     };
   },
   computed: {
-    showGoods(){
-      return this.goods[this.currentType].list
+    showGoods() {
+      return this.goods[this.currentType].list;
     }
   },
   components: {
@@ -59,7 +70,9 @@ export default {
     RecommendView,
     FeatureView,
     TabControl,
-    GoodsList
+    GoodsList,
+    Scroll,
+    BackTop
   },
   created() {
     //请求多个数据
@@ -75,15 +88,25 @@ export default {
     tabClick(index) {
       switch (index) {
         case 0:
-          this.currentType = "pop"
-          break
+          this.currentType = "pop";
+          break;
         case 1:
-          this.currentType = "new"
-          break
+          this.currentType = "new";
+          break;
         case 2:
-          this.currentType = "sell"
-          break
+          this.currentType = "sell";
+          break;
       }
+    },
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0);
+    },
+    contentScroll(position) {
+      // position.y<1000
+      this.isShowBackTop = -position.y > 1000;
+    },
+    loadMore() {
+      this.getHomeGoods(this.currentType);
     },
 
     //网络请求相关方法
@@ -101,6 +124,7 @@ export default {
       getHomeGoods(type, page).then(res => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+        this.$refs.scroll.finishPullUp();
       });
     }
   }
@@ -109,7 +133,9 @@ export default {
 
 <style scoped>
 #home {
-  padding-top: 44px;
+  /* padding-top: 44px; */
+  height: 100vh;
+  position: relative;
 }
 .home-nav {
   background-color: pink;
@@ -125,5 +151,19 @@ export default {
   position: sticky;
   top: 44px;
   z-index: 9;
+}
+/* .content {
+  height: calc(100%-93px);
+  overflow: hidden;
+  margin-top: 44px; 
+} */
+.content {
+  /* height: 300px;  */
+  overflow: hidden;
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
 }
 </style>
