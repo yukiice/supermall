@@ -14,7 +14,7 @@
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <tab-control :titles="['流行','新款','精选']"  @tabClick="tabClick" ref="tabControl"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
@@ -33,6 +33,7 @@ import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureViews";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
+import {debounce} from "common/utils"
 
 export default {
   name: "Home",
@@ -56,7 +57,8 @@ export default {
         }
       },
       currentType: "pop",
-      isShowBackTop: false
+      isShowBackTop: false,
+      tabOffsetTop:0
     };
   },
   computed: {
@@ -113,7 +115,6 @@ export default {
 
     getHomeMultidata() {
       getHomeMultidata().then(res => {
-        //    this.result = res
         //这样相当于把他保存了  res不会被回收
         this.banners = res.data.banner.list;
         this.recommends = res.data.recommend.list;
@@ -124,10 +125,18 @@ export default {
       getHomeGoods(type, page).then(res => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+        //如果没有这一行的话  scroll只能加载一次
         this.$refs.scroll.finishPullUp();
       });
-    }
-  }
+    },
+  }, 
+  mounted() {
+    //监听item中图片加载完成   放这里更好 利于获取和传递元素
+    const refresh =debounce(this.$refs.scroll.refresh,200)
+    this.$bus.$on("itemImageLoad", () => {
+      refresh()
+    });
+  },
 };
 </script>
 
@@ -145,11 +154,6 @@ export default {
   left: 0;
   right: 0;
   top: 0;
-  z-index: 9;
-}
-.tab-control {
-  position: sticky;
-  top: 44px;
   z-index: 9;
 }
 /* .content {
