@@ -10,7 +10,7 @@ export function request(config) {
 
   //2.axios的拦截器
 instance.interceptors.request.use(config=>{
-console.log(config);
+// console.log(config);
 //拦截后需要返回 不然发送后无法发出  会请求失败
 
 // 1.作用：比如config中的一些信息不符合服务器的要求
