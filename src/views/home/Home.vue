@@ -40,7 +40,9 @@ import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureViews";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-import { debounce } from "components/common/utils";
+import { debounce } from "common/utils";
+
+import {itemListenerMixin} from 'common/mixin';
 
 export default {
   name: "Home",
@@ -53,7 +55,8 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop
+    BackTop,
+
   },
   data() {
     return {
@@ -80,6 +83,7 @@ export default {
       saveY: 0
     };
   },
+  mixins:[itemListenerMixin],
   computed: {
     showGoods() {
       return this.goods[this.currentType].list;
@@ -162,13 +166,7 @@ export default {
     }
   },
   mounted() {
-    //监听item中图片加载完成   放这里更好 利于获取和传递元素
-    const refresh = debounce(this.$refs.scroll.refresh, 200);
-    this.$bus.$on("itemImageLoad", () => {
-      refresh();
-    });
-
-    //获取tabcontrol的offsettop
+   
   }
 };
 </script>
